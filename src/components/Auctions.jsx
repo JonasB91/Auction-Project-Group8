@@ -28,13 +28,8 @@ const Auctions = () => {
     console.log('bid clicked for auction', auctionID)
    };
 
-   const handleDelete = (auctionID) => {
-    //Sätta in functionalitet för att hantera delete av en auction, 
-    //loggar i konsol för att se click att detta fungerar
-    console.log('Deleted this Auction for:', auctionID)
-   }
 
-   const handleChange = (auctionID) => {
+   const handleInfo = (auctionID) => {
     //Sätta in functionalitet för att hantera att ändra en auctions information, alltså en PUT METHOD till web api,
     //loggar konsol för click function 
     console.log('Change for this auction', auctionID)
@@ -69,8 +64,7 @@ const Auctions = () => {
                       <p className='card-text'>Created By: <br />{auction.CreatedBy}</p>
                       <div className="btn-group" role="group" aria-label="Auction Actions">
                             <button className="btn btn-primary" onClick={() => handleBid(auction.AuctionID)}>Bid</button>
-                            <button className="btn btn-danger" onClick={() => handleDelete(auction.AuctionID)}>Delete</button>
-                            <button className="btn btn-secondary" onClick={() => handleChange(auction.AuctionID)}>Change</button>
+                            <button className="btn btn-secondary" onClick={() => handleInfo(auction.AuctionID)}>Biddings</button>
                           </div>
                       </div>
                     </div>
