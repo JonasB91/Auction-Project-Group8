@@ -39,7 +39,7 @@ const CreateAuction = () => {
         }
 
         const data = await response.json();
-        setAlertMessege('Auction Created Successfully!')
+        setAlertMessege('Auction Created Successfully!') // alert messege om vi lyckas skapa en auction visas på sidan,
         console.log('Auction Created', data)
         //Loggar ut i konsol för att se så user har lyckats skapa en ny auction
 
@@ -55,7 +55,7 @@ const CreateAuction = () => {
         });
 
       } catch (error) {
-        setAlertMessege('Error... Trying to Create new auction!')
+        setAlertMessege('Error... Trying to Create new auction!') // Alert messege error om vi inte lyckas skapa en auction visas på sidan
         console.error('Error Creating Auction', error)
         //Vi hanterar om user får error och inte kan skapa en auction, fånga upp error!
       }
