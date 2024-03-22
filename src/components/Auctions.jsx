@@ -40,6 +40,17 @@ const Auctions = () => {
     console.log('Change for this auction', auctionID)
    }
 
+   //Time Stamp Formatter, så vi bara visar årtal månda och datum samt 24h tid vid start datum och slut datum på auctions - skickar med formatTimestamp vid StartDate och EndDate
+   const formatTimestamp = (timestamp) => {
+    const date = new Date(timestamp);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
+  };
+
 
   return (
     <div className='container'>
@@ -53,8 +64,8 @@ const Auctions = () => {
                       <h5 className='card-title'>Title: {auction.Title}</h5>
                       <p className='card-text'>Description: <br />{auction.Description}</p>
                       <p className='card-text'>Starting Price: <br />{auction.StartingPrice}</p>
-                      <p className='card-text'>Start Date: <br />{auction.StartDate}</p>
-                      <p className='card-text'>End Date: <br />{auction.EndDate}</p>
+                      <p className='card-text'>Start Date: <br />{formatTimestamp(auction.StartDate)}</p>
+                      <p className='card-text'>End Date: <br />{formatTimestamp(auction.EndDate)}</p>
                       <p className='card-text'>Created By: <br />{auction.CreatedBy}</p>
                       <div className="btn-group" role="group" aria-label="Auction Actions">
                             <button className="btn btn-primary" onClick={() => handleBid(auction.AuctionID)}>Bid</button>
