@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import styles from "./search.module.css";
+import SearchResult from "./SearchResult"; // Importera den nya komponenten
 
 const URL = "https://auctioneer.azurewebsites.net/auction/s8w";
 
 export default function Search() {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchData, setSearchData] = useState([]);
+  const [searchResult, setSearchResult] = useState(null); // State för att hålla sökresultatet
 
   useEffect(() => {
     async function fetchApi() {
@@ -22,8 +24,9 @@ export default function Search() {
       (item) => item.AuctionID === parseInt(searchTerm)
     );
     if (searchedItem) {
-      console.log("Sökt objekt:", searchedItem);
+      setSearchResult(searchedItem); // Spara sökresultatet i state
     } else {
+      setSearchResult(null); // Återställ sökresultatet om ingen matchning hittades
       console.log("Ingen matchning hittades för ID:", searchTerm);
     }
   };
@@ -38,6 +41,8 @@ export default function Search() {
         placeholder="Search for Id..."
       />
       <button onClick={handleSearch}>Fetch</button>
+
+      {searchResult && <SearchResult result={searchResult} />}
     </div>
   );
 }
