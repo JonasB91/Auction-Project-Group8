@@ -11,7 +11,7 @@ const NavigationBar = () => {
     <div>
       <Navbar bg="dark" data-bs-theme="dark">
         <Container>
-          <Navbar.Brand href="Auctions">Cuba Auctioneer</Navbar.Brand>
+          <Navbar.Brand href="Auctions">Auctions</Navbar.Brand>
           <Nav className="me-auto">
             <Nav.Link href="CreateAuction">Add New Auction</Nav.Link>
             <Nav.Link href="ClosedAuction">Closed Auctions</Nav.Link>
