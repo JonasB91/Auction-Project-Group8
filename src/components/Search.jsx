@@ -27,11 +27,10 @@ export default function Search() {
       (item) => item.AuctionID === parseInt(searchTerm)
     );
     if (searchedItem) {
-      setSearchResult(searchedItem); // Spara sökresultatet i state
+      setSearchResult(searchedItem);
     } else {
       setNotFound(true);
-      setSearchResult(null); // Återställ sökresultatet om ingen matchning hittades
-      console.log("Ingen matchning hittades för ID:", searchTerm);
+      setSearchResult(null);
     }
   };
 
