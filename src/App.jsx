@@ -17,7 +17,7 @@ const App = () => {
         <Route path="/CreateAuction" element={<CreateAuction />} />
         <Route path="/Auctions" element={<Auctions />} />
         <Route path="/ClosedAuction" element={<ClosedAuction />} />
-        <Route path="/DeleteAuction" element={<DeleteAuctionComponent />} />
+        <Route path="/DeleteAuctionComponent" element={<DeleteAuctionComponent />} />
         </Routes>
       </div>
     </Router>

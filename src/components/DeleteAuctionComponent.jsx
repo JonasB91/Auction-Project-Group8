@@ -1,38 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import DeleteButton from './DeleteButton';
 
 const DeleteAuctionComponent = () => {
-  const [auctionId, setAuctionId] = useState('');
-  const [message, setMessage] = useState('');
+  const apiUrl = 'https://auctioneer.azurewebsites.net/auction/s8w';
+  const [auctions, setAuctions] = useState([]);
 
-  const handleDeleteClick = async () => {
-    try {
-      const response = await fetch(`https://auctioneer.azurewebsites.net/s8w/api/auctions/${auctionId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
+  useEffect(() => {
+    // Hämta auktionsdata från backend med hjälp av apiUrl
+    fetch(apiUrl)
+      .then(response => response.json())
+      .then(data => setAuctions(data))
+      .catch(error => console.error('Error fetching auctions:', error));
+  }, [apiUrl]);
 
-      const data = await response.json();
-      setMessage(data.message);
-      setAuctionId('');
-    } catch (error) {
-      setMessage('Något gick fel vid borttagning av auktionen.');
-      console.error(error);
-    }
+  const handleDelete = (auctionId) => {
+    // Skicka delete-förfrågan till backend för att ta bort auktionen med angivet id
+    fetch(`${apiUrl}/${auctionId}`, {
+      method: 'DELETE',
+    })
+    .then(response => {
+      if (response.ok) {
+        // Uppdatera lokal state för att ta bort den raderade auktionen från listan
+        setAuctions(prevAuctions => prevAuctions.filter(auction => auction.id !== auctionId));
+      } else {
+        console.error('Failed to delete auction:', response.statusText);
+      }
+    })
+    .catch(error => console.error('Error deleting auction:', error));
   };
 
   return (
     <div>
-      <h2>Ta bort aktuell auktion</h2>
-      <input
-        type="text"
-        value={auctionId}
-        onChange={(e) => setAuctionId(e.target.value)}
-        placeholder="Ange auktions-ID"
-      />
-      <button onClick={handleDeleteClick}>Ta bort</button>
-      {message && <p>{message}</p>}
+      <h2>Delete Auction List</h2>
+      <ul>
+        {auctions.map(auction => (
+          <li key={auction.id}>
+            <span>{auction.name}</span>
+            <DeleteButton auctionId={auction.id} onDelete={handleDelete} />
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
