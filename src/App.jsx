@@ -1,26 +1,29 @@
-import "./App.css";
-import { useState, useEffect } from "react";
+import React from 'react'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import './App.css'
+import NavigationBar from './components/NavigationBar';
+import CreateAuction from './components/CreateAuction';
+import Auctions from './components/Auctions';
+import ClosedAuction from './components/ClosedAuction';
 import Search from "./components/Search";
-import { Routes, Route } from "react-router-dom";
+import DeleteAuctionComponent from './components/DeleteAuctionComponent';
 
-const URL = "https://auctioneer.azurewebsites.net/auction/s8w";
-
-function App() {
-  const [auctions, setAuctions] = useState([]);
-
-  useEffect(() => {
-    async function fetchApi() {
-      const res = await fetch(URL);
-      const data = await res.json();
-      setAuctions(data);
-    }
-    fetchApi();
-  }, []);
+const App = () => {
+  
   return (
-    <>
-      <Search />
-    </>
-  );
+    <Router>
+      <div>
+        <NavigationBar />
+        <Search />
+        <Routes>
+          <Route path="/CreateAuction" element={<CreateAuction />} />
+          <Route path="/Auctions" element={<Auctions />} />
+          <Route path="/ClosedAuction" element={<ClosedAuction />} />
+          <Route path="/DeleteAuctionComponent" element={<DeleteAuctionComponent />} />
+        </Routes>
+      </div>
+    </Router>
+  )
 }
 
 export default App;

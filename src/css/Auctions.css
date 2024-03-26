@@ -1,0 +1,21 @@
+.auction-card {
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+  }
+  
+  .auction-card .back {
+    display: none;
+  }
+  
+  .auction-card.flipped {
+    transform: rotateY(180deg);
+  }
+  
+  .auction-card.flipped .front {
+    display: none;
+  }
+  
+  .auction-card.flipped .back {
+    display: block;
+  }
+  
