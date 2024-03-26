@@ -5,6 +5,7 @@ import NavigationBar from './components/NavigationBar';
 import CreateAuction from './components/CreateAuction';
 import Auctions from './components/Auctions';
 import ClosedAuction from './components/ClosedAuction';
+import Search from "./components/Search";
 import DeleteAuctionComponent from './components/DeleteAuctionComponent';
 
 const App = () => {
@@ -13,11 +14,12 @@ const App = () => {
     <Router>
       <div>
         <NavigationBar />
+        <Search />
         <Routes>
-        <Route path="/CreateAuction" element={<CreateAuction />} />
-        <Route path="/Auctions" element={<Auctions />} />
-        <Route path="/ClosedAuction" element={<ClosedAuction />} />
-        <Route path="/DeleteAuctionComponent" element={<DeleteAuctionComponent />} />
+          <Route path="/CreateAuction" element={<CreateAuction />} />
+          <Route path="/Auctions" element={<Auctions />} />
+          <Route path="/ClosedAuction" element={<ClosedAuction />} />
+          <Route path="/DeleteAuctionComponent" element={<DeleteAuctionComponent />} />
         </Routes>
       </div>
     </Router>
