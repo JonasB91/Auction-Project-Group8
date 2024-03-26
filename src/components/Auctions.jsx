@@ -47,6 +47,13 @@ const Auctions = () => {
     });
   };
 
+        //Om en auction är inom tidsramen så visas den annars inte, 
+        const isAuctionAvailable = (endDate) => {
+          const currentDate = new Date();
+          const auctionEndDate = new Date(endDate);
+          return auctionEndDate > currentDate;
+        };
+
   const formatTimestamp = (timestamp) => {
     const date = new Date(timestamp);
     const year = date.getFullYear();
@@ -63,6 +70,7 @@ const Auctions = () => {
       {error && <div className='alert alert-danger' role='alert'> {error}</div>}
       <div className='row row-cols-1 row-cols-md-3 g-4'>
         {auctions.map(auction => (
+            isAuctionAvailable(auction.EndDate) && (
           <div className='col' key={auction.AuctionID}>
             <div className='card h-100'>
               <div className='card-body d-flex flex-column justify-content-between'>
@@ -80,6 +88,7 @@ const Auctions = () => {
               </div>
             </div>
           </div>
+            )
         ))}
       </div>
     </div>
