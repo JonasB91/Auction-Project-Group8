@@ -8,6 +8,8 @@ const Auctions = () => {
   const [selectedAuction, setSelectedAuction] = useState(null);
   const [auctionId, setAuctionId] = useState(null);
   const [bidder, setBidder] = useState('');
+  const [currentAction, setCurrentAction] = useState(null);
+  const [bidHistory, setBidHistory] = useState([]);
 
   useEffect(() => {
     fetch('https://auctioneer.azurewebsites.net/auction/s8w')
@@ -28,7 +30,9 @@ const Auctions = () => {
 
         //Hantera Bidding på en auction fetchar ner current auction som man vill buda på
         const handleBid = async (auctionID) => {
-          
+          setCurrentAction('bid');
+          setBidHistory([]);
+
           try {
               const response = await fetch(`https://auctioneer.azurewebsites.net/auction/s8w/${auctionID}`)
               if(!response.ok) {
@@ -45,7 +49,7 @@ const Auctions = () => {
         };
 
 
-        //Hantera bid form för att lägga till och skicka post request till budning
+        //Hantera bid form för att lägga till och skicka post request till budnings endpoint, 
         const handleBidFormSubmit = async (event) => {
           event.preventDefault();
           try {
@@ -57,15 +61,14 @@ const Auctions = () => {
               body: JSON.stringify({
                 AuctionID: auctionId,
                 Amount: bidAmount,
-                bidder: bidder,
+                Bidder: bidder,
                 GroupCode: 's8w'
              })
-             
             });
 
               if (!response.ok) {
               throw new Error('Failed to place bid');
-            }
+            } 
             const data = await response.json();
             console.log('Bid successfully placed', data);
             // Uppdatera UI Här
@@ -77,8 +80,20 @@ const Auctions = () => {
 
 
         //Hantera information om en auktion
-        const handleInfo = (auctionID) => {
-          console.log('Change for this auction', auctionID);
+        const handleInfo = async (auctionID) => {
+          setCurrentAction('info');
+
+          try {
+            const response = await fetch (`https://auctioneer.azurewebsites.net/bid/s8w/${auctionID}`);
+            if(!response.ok) {
+              throw new Error('Error fetching bid history');
+            }
+            const bidHistoryData = await response.json()
+            setBidHistory(bidHistoryData)
+          } catch (error) {
+            console.error('Error fetching bid history', error)
+            console.log('Failed to fetch bid history')
+          }
         };
 
 
@@ -108,7 +123,7 @@ const Auctions = () => {
           return auctionEndDate > currentDate;
         };
 
-        //Kollar och renderar auktion inom tidsramen så utgående inte visas, 
+        //Formatterar Time Stamp så det visar årtal månad datum och klockslag,
         const formatTimestamp = (timestamp) => {
         const date = new Date(timestamp);
         const year = date.getFullYear();
@@ -141,28 +156,47 @@ const Auctions = () => {
                           <button className="btn btn-secondary" onClick={() => handleInfo(auction.AuctionID)}>Bid Info</button>
                           <button className="btn btn-danger" onClick={() => handleDelete(auction.AuctionID)}>Delete</button>
                         </div>
-                      </div>
-                    </div>
+                </div>
+               </div>
+              </div>
+              )
+            ))}
+            {currentAction === 'bid' && selectedAuction && (
+              <div className='row mt-4'>
+                <div className='col'>
+                  <h2>Place bid for {selectedAuction.Title}</h2>
+                  <form onSubmit={handleBidFormSubmit}>
+                  </form>
                   </div>
-                )
-              ))}
+                  </div>
+            )}    
+           {currentAction === 'info' && bidHistory.length > 0 && (
+              <div className='row mt-4'>
+                <div className='col'>
+                  <h2>Bid History</h2>
+                  <ul className="list-group">
+                    {bidHistory
+                      .slice() 
+                      .sort((a, b) => b.Amount - a.Amount) // Sorterar bids i ordning topp till bottom,
+                      .map((bid, index) => {
+                        // Kollar om vem som är högsta bud,
+                        const isHighestBid = index === 0;
+                        const listItemClass = isHighestBid ? "list-group-item list-group-item-danger" : "list-group-item";
+                        return (
+                          <li key={index} className={listItemClass}>
+                            {bid.Bidder} - {bid.Amount} {isHighestBid && <strong>(Highest Bid)</strong>}
+                          </li>
+                        );
+                      })}
+                  </ul>
+                </div>
+              </div>
+            )}
             </div>
             {selectedAuction && (
               <div className="row mt-4">
                 <div className="col">
-                  <h2>Place Bid for {selectedAuction.Title}</h2>
                   <form onSubmit={handleBidFormSubmit}>
-                  <div className="mb-3">
-                      <label htmlFor="AuctionID" className="form-label">Auction ID</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="AuctionID"
-                        value={auctionId}
-                        onChange={(e) => setAuctionId(e.target.value)}
-                        required
-                      />
-                    </div>
                     <div className="mb-3">
                       <label htmlFor="Amount" className="form-label">Bid Amount</label>
                       <input
@@ -193,5 +227,7 @@ const Auctions = () => {
           </div>
         );
       };
+
+
 export default Auctions;
 
