@@ -23,7 +23,6 @@ const CreateAuction = () => {
   //SubmitHandler som vi ska skicka upp data till web'api för att skapa ny auction
   const handleSubmit = async (event) => {
     event.preventDefault();
-
       try {
         const response = await fetch('https://auctioneer.azurewebsites.net/auction/s8w', {
           method: 'POST',

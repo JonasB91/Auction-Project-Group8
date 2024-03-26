@@ -14,6 +14,10 @@ const App = () => {
     <Router>
       <div>
         <NavigationBar />
+        <div className='welcome-container'>
+          <h1 className="welcome-message text-center fs-2">Welcome to Auctioneer</h1>
+          <p className="welcome-description text-center fs-5">Explore a world of auctions where you can bid on unique items, from art to antiques, electronics to collectibles. Dive into the excitement of competitive bidding and discover treasures waiting for you.</p>
+        </div>
         <Search />
         <Routes>
           <Route path="/CreateAuction" element={<CreateAuction />} />
