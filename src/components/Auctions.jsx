@@ -158,13 +158,6 @@ const Auctions = () => {
     return `${year}-${month}-${day} ${hours}:${minutes}`;
   };
 
-  const handleSelectAuction = (auctionID) => {
-    const selected = auctions.find(
-      (auction) => auction.AuctionID === auctionID
-    );
-    setSelectedAuction(selected);
-  };
-
   return (
     <div className="container">
       <h2>All Auctions Available</h2>
@@ -183,12 +176,6 @@ const Auctions = () => {
                     >
                       View Details
                     </Link>
-                    <button
-                      className="btn btn-secondary mt-2"
-                      onClick={() => handleSelectAuction(auction.AuctionID)}
-                    >
-                      Select Auction
-                    </button>
 
                     <p className="card-text">
                       Description: <br />

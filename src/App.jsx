@@ -11,7 +11,7 @@ import DeleteAuctionComponent from "./components/DeleteAuctionComponent";
 import AuctionDetails from "./components/AuctionDetails";
 
 const App = () => {
-  const [auctions, setAuctions] = useState({});
+  const [auctions, setAuctions] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
