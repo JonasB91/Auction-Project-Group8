@@ -9,7 +9,11 @@ const Auctions = () => {
   const [selectedAuction, setSelectedAuction] = useState(null);
   const [auctionId, setAuctionId] = useState(null);
   const [bidder, setBidder] = useState("");
+  const [currentAction, setCurrentAction] = useState(null);
+  const [bidHistory, setBidHistory] = useState([]);
+  const [successMessage, setSuccessMessage] = useState("");
 
+  // Fetchar när komponeneten mountas, hämtar auktioner från web api
   useEffect(() => {
     fetch("https://auctioneer.azurewebsites.net/auction/s8w")
       .then((response) => {
@@ -28,6 +32,9 @@ const Auctions = () => {
 
   //Hantera Bidding på en auction fetchar ner current auction som man vill buda på
   const handleBid = async (auctionID) => {
+    setCurrentAction("bid");
+    setBidHistory([]);
+
     try {
       const response = await fetch(
         `https://auctioneer.azurewebsites.net/auction/s8w/${auctionID}`
@@ -45,14 +52,7 @@ const Auctions = () => {
     }
   };
 
-  const getBidsForSpecificAuction = (auctionId) => {
-    // TODO: Hämta bud för en specifik auktion, sen ersätt {auction.StartingPrice} med högsta budet så det syns för användaren.
-    // conditional rendering kanske?
-    // om budet är större än auction.StartingPrice, eller
-    // `https://auctioneer.azurewebsites.net/bid/s8w/${auctionId}`
-  };
-
-  //Hantera bid form för att lägga till och skicka post request till budning
+  //Hantera bid form för att lägga till och skicka post request till budnings endpoint,
   const handleBidFormSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -73,20 +73,50 @@ const Auctions = () => {
       );
 
       if (!response.ok) {
-        throw new Error("Failed to place bid");
+        //Kolla om response är Content-Type JSON
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.indexOf("application/json") !== -1) {
+          const errorResponse = await response.json();
+          const errorMessege =
+            errorResponse.message || "There was a problem with your bid!";
+          throw new Error(errorMessege);
+        } else {
+          //annars om response inte är i JSON format, Läs ut detta som text
+          const errorText = await response.text();
+          throw new Error(errorText);
+        }
       }
+
       const data = await response.json();
       console.log("Bid successfully placed", data);
+      setSuccessMessage("Congratulations Bid successfully added!");
       // Uppdatera UI Här
+      setTimeout(() => setSuccessMessage(""), 5000); // Timer för när ett success meddelande ska visas, cleara det efter en vis tid
+      setError(null); // Cleara tidigare errors
     } catch (error) {
-      console.error("Error placing bid:", error);
-      setError("Failed to place bid");
+      console.error("Error placing bid:", error.message || error);
+      setError(error.message || "An unexpected error occured!");
+      setError(null);
     }
   };
 
   //Hantera information om en auktion
-  const handleInfo = (auctionID) => {
-    console.log("Change for this auction", auctionID);
+  const handleInfo = async (auctionID) => {
+    setCurrentAction("info");
+
+    try {
+      const response = await fetch(
+        `https://auctioneer.azurewebsites.net/bid/s8w/${auctionID}`
+      );
+      if (!response.ok) {
+        throw new Error("Error fetching bid history");
+      }
+      const bidHistoryData = await response.json();
+      setBidHistory(bidHistoryData);
+    } catch (error) {
+      console.error("Error fetching bid history", error);
+      console.log("Failed to fetch bid history");
+    }
   };
 
   // Hantera att ta bort en auktion
@@ -117,7 +147,7 @@ const Auctions = () => {
     return auctionEndDate > currentDate;
   };
 
-  //Kollar och renderar auktion inom tidsramen så utgående inte visas,
+  //Formatterar Time Stamp så det visar årtal månad datum och klockslag,
   const formatTimestamp = (timestamp) => {
     const date = new Date(timestamp);
     const year = date.getFullYear();
@@ -128,15 +158,16 @@ const Auctions = () => {
     return `${year}-${month}-${day} ${hours}:${minutes}`;
   };
 
+  const handleSelectAuction = (auctionID) => {
+    const selected = auctions.find(
+      (auction) => auction.AuctionID === auctionID
+    );
+    setSelectedAuction(selected);
+  };
+
   return (
     <div className="container">
       <h2>All Auctions Available</h2>
-      {error && (
-        <div className="alert alert-danger" role="alert">
-          {" "}
-          {error}
-        </div>
-      )}
       <div className="row row-cols-1 row-cols-md-3 g-4">
         {auctions.map(
           (auction) =>
@@ -146,6 +177,19 @@ const Auctions = () => {
                   <div className="card-body d-flex flex-column justify-content-between">
                     <h5 className="card-title">Title: {auction.Title}</h5>
                     <p className="card-text">AuctionID: {auction.AuctionID}</p>
+                    <Link
+                      to={`/auction/${auction.AuctionID}`}
+                      className="btn btn-primary"
+                    >
+                      View Details
+                    </Link>
+                    <button
+                      className="btn btn-secondary mt-2"
+                      onClick={() => handleSelectAuction(auction.AuctionID)}
+                    >
+                      Select Auction
+                    </button>
+
                     <p className="card-text">
                       Description: <br />
                       {auction.Description}
@@ -195,25 +239,57 @@ const Auctions = () => {
               </div>
             )
         )}
+        {currentAction === "bid" && selectedAuction && (
+          <div className="row mt-4">
+            <div className="col">
+              <h2>Place bid for {selectedAuction.Title}</h2>
+              <form onSubmit={handleBidFormSubmit}></form>
+            </div>
+          </div>
+        )}
+        {currentAction === "info" && bidHistory.length > 0 && (
+          //CurrentAction om vi ska rendera bud eller budhistory
+          <div className="row mt-4">
+            <div className="col">
+              <h2>Bid History</h2>
+              <ul className="list-group">
+                {bidHistory
+                  .slice()
+                  .sort((a, b) => b.Amount - a.Amount) // Sorterar bids i ordning topp till bottom,
+                  .map((bid, index) => {
+                    // Kollar om vem som är högsta bud,
+                    const isHighestBid = index === 0;
+                    const listItemClass = isHighestBid
+                      ? "list-group-item list-group-item-danger"
+                      : "list-group-item";
+                    return (
+                      <li key={index} className={listItemClass}>
+                        {bid.Bidder} - {bid.Amount}{" "}
+                        {isHighestBid && <strong>(Highest Bid)</strong>}
+                      </li>
+                    );
+                  })}
+              </ul>
+            </div>
+          </div>
+        )}
       </div>
+      {error && (
+        <div className="alert alert-danger" role="alert">
+          {" "}
+          {error}
+        </div>
+      )}
+      {successMessage && (
+        <div className="alert alert-success" role="alert">
+          {successMessage}
+        </div>
+      )}
       {selectedAuction && (
+        // Selected Auction när du ska buda på en auktion
         <div className="row mt-4">
           <div className="col">
-            <h2>Place Bid for {selectedAuction.Title}</h2>
             <form onSubmit={handleBidFormSubmit}>
-              <div className="mb-3">
-                <label htmlFor="AuctionID" className="form-label">
-                  Auction ID
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="AuctionID"
-                  value={auctionId}
-                  onChange={(e) => setAuctionId(e.target.value)}
-                  required
-                />
-              </div>
               <div className="mb-3">
                 <label htmlFor="Amount" className="form-label">
                   Bid Amount
@@ -250,4 +326,5 @@ const Auctions = () => {
     </div>
   );
 };
+
 export default Auctions;
