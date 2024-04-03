@@ -12,6 +12,7 @@ const Auctions = () => {
   const [currentAction, setCurrentAction] = useState(null);
   const [bidHistory, setBidHistory] = useState([]);
   const [successMessage, setSuccessMessage] = useState("");
+  const [tempDescr, setTempDescr] = useState("");
 
   // Fetchar när komponeneten mountas, hämtar auktioner från web api
   useEffect(() => {
@@ -140,6 +141,33 @@ const Auctions = () => {
       });
   };
 
+  // Lägg till en ny funktion för att hantera uppdatering av auktionen
+  const handleUpdateAuction = async (auction) => {
+    try {
+      auction.Description = tempDescr;
+      const response = await fetch(
+        `https://auctioneer.azurewebsites.net/auction/s8w/${auction.AuctionID}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(auction),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to update auction");
+      }
+
+      // Uppdatera UI eller visa ett bekräftelsemeddelande för användaren
+      console.log("Auction updated successfully");
+    } catch (error) {
+      console.error("Error updating auction:", error);
+      // Hantera fel, till exempel visa ett felmeddelande för användaren
+    }
+  };
+
   //Om en auction är inom tidsramen så visas den annars inte,
   const isAuctionAvailable = (endDate) => {
     const currentDate = new Date();
@@ -181,6 +209,11 @@ const Auctions = () => {
                       Description: <br />
                       {auction.Description}
                     </p>
+                    <input
+                      placeholder="Uppdatera beskrivning"
+                      type="text"
+                      onInput={(e) => setTempDescr(e.target.value)}
+                    />
                     <p className="card-text">
                       Starting Price: <br />
                       {auction.StartingPrice}
@@ -219,6 +252,12 @@ const Auctions = () => {
                         onClick={() => handleDelete(auction.AuctionID)}
                       >
                         Delete
+                      </button>
+                      <button
+                        className="btn btn-primary"
+                        onClick={() => handleUpdateAuction(auction)}
+                      >
+                        Update Auction
                       </button>
                     </div>
                   </div>

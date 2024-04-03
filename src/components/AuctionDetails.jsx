@@ -28,7 +28,7 @@ const AuctionDetails = ({ auctions }) => {
       })
 
       .then((data) => {
-        // Kontrollera om datan är tom innan du försöker hitta det högsta budet
+        // Kontrollera om datan är tom innan man försöker hitta det högsta budet
         if (data.length > 0) {
           const highest = data.reduce((prev, current) =>
             prev.Amount > current.Amount ? prev : current
