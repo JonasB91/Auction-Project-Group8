@@ -10,6 +10,9 @@ import Search from "./components/Search";
 import DeleteAuctionComponent from "./components/DeleteAuctionComponent";
 import AuctionDetails from "./components/AuctionDetails";
 
+
+
+
 const App = () => {
   const [auctions, setAuctions] = useState([]);
   const [error, setError] = useState(null);
@@ -49,14 +52,8 @@ const App = () => {
           <Route path="/CreateAuction" element={<CreateAuction />} />
           <Route path="/Auctions" element={<Auctions />} />
           <Route path="/ClosedAuction" element={<ClosedAuction />} />
-          <Route
-            path="/auction/:auctionId"
-            element={<AuctionDetails auctions={auctions} />}
-          />
-          <Route
-            path="/DeleteAuctionComponent"
-            element={<DeleteAuctionComponent />}
-          />
+          <Route path="/auction/:auctionId" element={<AuctionDetails auctions={auctions} />}
+          <Route path="/DeleteAuctionComponent" element={<DeleteAuctionComponent />}
         </Routes>
       </div>
     </Router>
