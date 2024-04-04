@@ -23,8 +23,8 @@ export default function Search() {
 
   const handleSearch = () => {
     setNotFound(false);
-    const searchedItem = searchData.find(
-      (item) => item.AuctionID === parseInt(searchTerm)
+    const searchedItem = searchData.find((item) =>
+      item.Title.toLowerCase().includes(searchTerm.toLowerCase())
     );
     if (searchedItem) {
       setSearchResult(searchedItem);
@@ -46,9 +46,9 @@ export default function Search() {
         onChange={handleSearchTerm}
         value={searchTerm}
         type="text"
-        placeholder="Search for Id..."
+        placeholder="Search..."
       />
-      <button onClick={handleSearch}>Fetch</button>
+      <button onClick={handleSearch}>Search</button>
       {notFound && <p>Id does not match: {searchTerm}</p>}
 
       {searchResult && <SearchResult result={searchResult} />}
