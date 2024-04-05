@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import DeleteButton from './DeleteButton';
 
 const DeleteAuctionComponent = () => {
-  const apiUrl = 'https://auctioneer.azurewebsites.net/auction/s8w';
+  const apiUrl = 'https://auctioneer2.azurewebsites.net/auction/s8w';
   const [auctions, setAuctions] = useState([]);
 
   useEffect(() => {

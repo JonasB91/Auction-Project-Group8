@@ -16,7 +16,7 @@ const Auctions = () => {
 
   // Fetchar när komponeneten mountas, hämtar auktioner från web api
   useEffect(() => {
-    fetch("https://auctioneer.azurewebsites.net/auction/s8w")
+    fetch("https://auctioneer2.azurewebsites.net/auction/s8w")
       .then((response) => {
         if (!response.ok) {
           throw new Error("Error fetching auctions!");
@@ -38,7 +38,7 @@ const Auctions = () => {
 
     try {
       const response = await fetch(
-        `https://auctioneer.azurewebsites.net/auction/s8w/${auctionID}`
+        `https://auctioneer2.azurewebsites.net/auction/s8w/${auctionID}`
       );
       if (!response.ok) {
         throw new Error("Error fetching selected auctioin!");
@@ -58,7 +58,7 @@ const Auctions = () => {
     event.preventDefault();
     try {
       const response = await fetch(
-        `https://auctioneer.azurewebsites.net/bid/s8w`,
+        `https://auctioneer2.azurewebsites.net/bid/s8w`,
         {
           method: "POST",
           headers: {
@@ -107,7 +107,7 @@ const Auctions = () => {
 
     try {
       const response = await fetch(
-        `https://auctioneer.azurewebsites.net/bid/s8w/${auctionID}`
+        `https://auctioneer2.azurewebsites.net/bid/s8w/${auctionID}`
       );
       if (!response.ok) {
         throw new Error("Error fetching bid history");
@@ -122,7 +122,7 @@ const Auctions = () => {
 
   // Hantera att ta bort en auktion
   const handleDelete = (auctionID) => {
-    fetch(`https://auctioneer.azurewebsites.net/auction/s8w/${auctionID}`, {
+    fetch(`https://auctioneer2.azurewebsites.net/auction/s8w/${auctionID}`, {
       method: "DELETE",
     })
       .then((response) => {
@@ -146,7 +146,7 @@ const Auctions = () => {
     try {
       auction.Description = tempDescr;
       const response = await fetch(
-        `https://auctioneer.azurewebsites.net/auction/s8w/${auction.AuctionID}`,
+        `https://auctioneer2.azurewebsites.net/auction/s8w/${auction.AuctionID}`,
         {
           method: "PUT",
           headers: {
@@ -187,8 +187,8 @@ const Auctions = () => {
   };
 
   return (
-    <div className="container">
-      <h2>All Auctions Available</h2>
+<div className="container mt-4">
+  <h2 className="text-center">All Auctions Available</h2>
       <div className="row row-cols-1 row-cols-md-3 g-4">
         {auctions.map(
           (auction) =>
@@ -210,7 +210,7 @@ const Auctions = () => {
                       {auction.Description}
                     </p>
                     <input
-                      placeholder="Uppdatera beskrivning"
+                      placeholder="Update description"
                       type="text"
                       onInput={(e) => setTempDescr(e.target.value)}
                     />

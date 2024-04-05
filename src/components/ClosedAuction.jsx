@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Card } from 'react-bootstrap';
 
 const ClosedAuctions = () => {
   const [closedAuctions, setClosedAuctions] = useState([]);
@@ -7,7 +8,7 @@ const ClosedAuctions = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('https://auctioneer.azurewebsites.net/auction/s8w');
+        const response = await fetch('https://auctioneer2.azurewebsites.net/auction/s8w');
         if (!response.ok) {
           throw new Error('Error fetching closed auctions!');
         }
@@ -28,30 +29,38 @@ const ClosedAuctions = () => {
   }, []);
 
   return (
-    <div>
-      <h2>Closed Auctions</h2>
-      {closedAuctions.length > 0 ? (
-        <ul>
-          {closedAuctions.map(auction => {
-            console.log('Highest Bid:', auction.HighestBid);
-            console.log('Winner:', auction.HighestBid && auction.HighestBid.Winner ? auction.HighestBid.Winner : 'No winner');
-
-            return (
-              <li key={auction.Id}>
-                <p>Title: {auction.Title}</p>
-                <p>Description: {auction.Description}</p>
-                <p>End Date: {new Date(auction.EndDate).toLocaleString()}</p>
-                {/* Säker åtkomst för att undvika kraschar om HighestBid är null eller undefined */}
-                <p>Highest Bid: {auction.HighestBid ? auction.HighestBid.Amount : 'No bid'}</p>
-                <p>Winner: {auction.HighestBid && auction.HighestBid.Winner ? auction.HighestBid.Winner : 'No winner'}</p>
-                <p>Created By: {auction.CreatedBy}</p>
-              </li>
-            );
-          })}
-        </ul>
-      ) : (
-        <p>No closed auctions found.</p>
-      )}
+<div className="text-center mt-4">
+  <h2>Closed Auctions</h2>
+      <div className="d-flex flex-wrap justify-content-center">
+        {closedAuctions.length > 0 ? (
+          closedAuctions.map(auction => (
+            <div className="m-2" key={auction.Id}>
+              <Card style={{ width: '18rem' }}>
+                <Card.Body>
+                  <Card.Title>{auction.Title}</Card.Title>
+                  <Card.Text>
+                    {auction.Description}
+                  </Card.Text>
+                  <Card.Text>
+                    End Date: {new Date(auction.EndDate).toLocaleString()}
+                  </Card.Text>
+                  <Card.Text>
+                    Highest Bid: {auction.HighestBid ? auction.HighestBid.Amount : 'No bid'}
+                  </Card.Text>
+                  <Card.Text>
+                    Winner: {auction.HighestBid && auction.HighestBid.Winner ? auction.HighestBid.Winner : 'No winner'}
+                  </Card.Text>
+                  <Card.Text>
+                    Created By: {auction.CreatedBy}
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            </div>
+          ))
+        ) : (
+          <p>No closed auctions found.</p>
+        )}
+      </div>
       {error && <p>Error: {error}</p>}
     </div>
   );

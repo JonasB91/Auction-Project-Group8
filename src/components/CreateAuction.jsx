@@ -24,7 +24,7 @@ const CreateAuction = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
       try {
-        const response = await fetch('https://auctioneer.azurewebsites.net/auction/s8w', {
+        const response = await fetch('https://auctioneer2.azurewebsites.net/auction/s8w', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
