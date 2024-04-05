@@ -7,3 +7,25 @@
   font-size: 16px;
   color: #393e46;
 }
+
+
+
+.searchContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.inputHalfWidth {
+margin-left: 350px;
+  margin-right: 10px; 
+justify-content: center;
+}
+
+
+.errorMsg {
+  color: red;
+}
+
+
+

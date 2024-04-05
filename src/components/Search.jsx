@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styles from "./search.module.css";
 import SearchResult from "./SearchResult";
 
-const URL = "https://auctioneer.azurewebsites.net/auction/s8w";
+const URL = "https://auctioneer2.azurewebsites.net/auction/s8w";
 
 export default function Search() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -40,17 +40,18 @@ export default function Search() {
   };
 
   return (
-    <div className={styles.searchContainer}>
-      <input
-        className={styles.input}
-        onChange={handleSearchTerm}
-        value={searchTerm}
-        type="text"
-        placeholder="Search..."
-      />
-      <button onClick={handleSearch}>Search</button>
-      {notFound && <p>Id does not match: {searchTerm}</p>}
-
+    <div className="container mt-4">
+      <div className="input-group mb-3">
+        <input
+          className={`${styles.input} ${styles.inputHalfWidth}`}
+          onChange={handleSearchTerm}
+          value={searchTerm}
+          type="text"
+          placeholder="Search..."
+        />
+        <button onClick={handleSearch} className="btn btn-success">Search</button>
+      </div>
+      {notFound && <p className="mt-2">Id does not match: {searchTerm}</p>}
       {searchResult && <SearchResult result={searchResult} />}
     </div>
   );

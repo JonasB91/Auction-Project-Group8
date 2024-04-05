@@ -19,7 +19,7 @@ const AuctionDetails = ({ auctions }) => {
     }
 
     // Hämta buddata för den specifika auktionen från API:et
-    fetch(`https://auctioneer.azurewebsites.net/bid/s8w/${auctionId}`)
+    fetch(`https://auctioneer2.azurewebsites.net/bid/s8w/${auctionId}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Error fetching bid data");
